@@ -23,8 +23,7 @@
       },
       created () {
           Vue.axios.get('http://localhost:8080/api/seller').then((response) => {
-            console.log(response.data);
-            this.seller = response.data;
+            this.seller = response.data.data;
           });
       },
       components: {
