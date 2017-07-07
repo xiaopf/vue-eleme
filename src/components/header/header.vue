@@ -24,20 +24,19 @@
 			<div class="detail_wrap">
 				<div class="detail_content">
 				    <div class="detail_name">{{ seller.name }}</div>
-					<div class="star">
-						{{ fullStar }}
-					</div>
+					<vstar score="5" size="8"></vstar>
 				</div>
 			</div>
 			<div class="detail_close">
-				<span class="fa fa-close"></span>
+				<span @click="closeDetail" class="fa fa-close"></span>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script type='text/ecmascript-6'>
-	export default {
+    import star from '../star/star.vue';
+    export default {
         props: {
             seller: {
                 type: Object
@@ -45,12 +44,15 @@
         },
         data () {
             return {
-                detailShow: 'false'
+                detailShow: false
             };
         },
         methods: {
             showDetail () {
                 this.detailShow = true;
+            },
+            closeDetail () {
+                this.detailShow = false;
             }
         },
         computed: {
@@ -63,8 +65,11 @@
             noneStar () {
                 return this.seller.score;
             }
-        }
-	};
+        },
+        components: {
+        	vstar: star
+    	}
+    };
 </script>
 
 <style>
@@ -102,7 +107,7 @@
 	/* 右侧的文字部分 */
 	.text_wrap{
         display: inline-block; 
-        width:77%;
+        width:72%;
         margin-left: 16px;   
         margin-top: 2px;
 	}

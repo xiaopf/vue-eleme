@@ -9,7 +9,7 @@
 <style>
 	.goods{
 		width:100%;
-		height: 500px;
+		height: auto;
 		background: red;
 	}
 </style> 
