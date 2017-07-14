@@ -24,7 +24,26 @@
 			<div class="detail_wrap">
 				<div class="detail_content">
 				    <div class="detail_name">{{ seller.name }}</div>
-					<vstar score="5" size="8"></vstar>
+					<div class="vstar_wrap">
+						<vstar v-bind:score=seller.score v-bind:size="8"></vstar>
+					</div>
+					<div class="title">
+						<div class="line"></div>
+						<div class="text">优惠信息</div>
+						<div class="line"></div>
+					</div>
+					<ul v-if=seller.supports class="supports_all">
+						<li v-for="typeItem in seller.supports" class="supports_item">
+							<span v-bind:class="icon_class[typeItem.type]"></span>
+							<span> {{ typeItem.description }} </span>
+						</li>
+					</ul>
+					<div class="title">
+						<div class="line"></div>
+						<div class="text">商家公告</div>
+						<div class="line"></div>
+					</div>
+					<div class="bulletin_tt">{{ seller.bulletin }}</div>
 				</div>
 			</div>
 			<div class="detail_close">
@@ -44,7 +63,8 @@
         },
         data () {
             return {
-                detailShow: false
+                detailShow: false,
+                icon_class: ['type0', 'type1', 'type2', 'type3', 'type4']
             };
         },
         methods: {
@@ -55,20 +75,9 @@
                 this.detailShow = false;
             }
         },
-        computed: {
-            fullStar () {
-                return this.seller.score;
-            },
-            halfStar () {
-                return this.seller.score;
-            },
-            noneStar () {
-                return this.seller.score;
-            }
-        },
         components: {
-        	vstar: star
-    	}
+            vstar: star
+        }
     };
 </script>
 
@@ -252,11 +261,11 @@
 		padding: 64px 0;
 	}
 	.detail_name{
-		font-size: 18px;
-		height: 18px;
+		font-size: 20px;
+		height: 20px;
 		text-align: center;
 		color:#fff;
-		font-weight: blod;
+		font-weight: bold;
 
 	}
 	.detail_close{
@@ -266,8 +275,97 @@
 		width: 32px;
 		margin:-64px auto 0;
 	}
-	.star{
-		font-size: 14px;
-		height: 14px;
+
+	.vstar_wrap{
+		text-align: center;
+		margin: 12px 0;
 	}
+
+	.title{
+        width: 80%;
+        height: auto;
+        display: flex;
+        margin: 0 auto;
+	}
+	.title .line{
+       height:0;
+       width: 90%;
+       border-bottom: 1px solid grey;
+       position: relative;
+       top:10px;
+       flex:1;
+
+	}
+	.title .text{
+	   height:24px;
+	   width: 100px;
+       font-size: 18px;
+       font-weight: bold;
+       color:#fff;
+       text-align: center;
+	}
+	.supports_all{
+		display: block;
+		width: 80%;
+		height: auto;
+		margin: 20px auto;
+		
+	}
+	.supports_item{
+		display: block;
+		font-size: 0;
+		width: 100%;
+		height: 28px;
+		margin: 8px 0;
+	}
+	.supports_item span:first-child{
+		vertical-align: top;
+		width: 28px;
+		height: 28px;
+        display: inline-block;
+        line-height: 28px;
+        margin-right: 6px;
+	}
+	.supports_item span:last-child{
+		vertical-align: top;
+		width: auto;
+		height: 28px;
+		font-size: 14px;
+        display: inline-block;
+        line-height: 28px;
+        color: #fff;
+	}
+	.type0{
+		background:url(./images/decrease_2@2x.png) no-repeat center center;
+		background-size: 22px 22px;
+	}
+	.type1{
+		background:url(./images/discount_2@2x.png) no-repeat center center;
+		background-size: 22px 22px;
+	}
+	.type2{
+		background:url(./images/special_2@2x.png) no-repeat center center;
+		background-size: 22px 22px;
+	}
+	.type3{
+		background:url(./images/invoice_2@2x.png) no-repeat center center;
+		background-size: 22px 22px;
+	}
+	.type4{
+		background:url(./images/guarantee_2@2x.png) no-repeat center center;
+		background-size: 22px 22px;
+	}
+
+	.bulletin_tt{
+		margin: 10px auto;
+		width: 80%;
+		height:auto;
+		font-size: 16px;
+		color:#fff;
+		line-height: 26px;
+		text-indent: 2em;
+		background: transparent;
+	}
+
+
 </style> 

@@ -16,6 +16,7 @@
         width: 100%;
         height: 40px;
         line-height: 40px;
+        border-bottom:1px solid grey;
 	}
 	.tab-item{
 		flex: auto;
