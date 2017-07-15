@@ -4,13 +4,13 @@
 			<ul>
 				<li v-for="good in goodList" class="good_name">
 					<span class="text">
-						<span v-bind:class="icon_class_good[good.type]"></span>{{good.name}}	
+						<span v-bind:class="icon_class_good[good.type]"></span>{{good.name}}
 					</span>
 				</li>
 			</ul>
 		</div>
 		<div class="food_wrap">
-			<ul>
+			<ul class="food_wrap_ul" ref="ul">
 				<li v-for="good in goodList" class="food_list">
                      <div v-for="(food,index) in good.foods" class="food_list_item">
                         <h3 v-if="index===0" class="food_title">{{good.name}}</h3>
@@ -29,12 +29,10 @@
 	                                <span class="price">
 	                                	<span>￥</span><span>{{food.price}}</span>
 	                                </span>
-	                                <span class="des_rat_n oldPrice">￥{{food.oldPrice}}</span>
+	                                <span v-if="food.oldPrice" class="des_rat_n oldPrice">￥{{food.oldPrice}}</span>
                                 </p>
-                               
                             </div>
                         </div>
-                     	
                      </div>
 				</li>
 			</ul>
@@ -55,6 +53,15 @@
             this.$http.get('/api/goods').then((response) => {
                 this.goodList = response.data.data;
             });
+        },
+        methods: {
+            scroll_event () {
+                console.log(111);
+            }
+        },
+        ready () {
+            console.log(this.$refs.ul);
+            window.addEventListener('scroll', this.scroll_event);
         }
 	};
 </script>
@@ -65,7 +72,7 @@
 		width:100%;
 		height:auto;
 		position: absolute;
-		top:174px;
+		top:175px;
 		bottom:60px;
 		overflow:hidden;
 	}
@@ -79,7 +86,6 @@
 		margin:0 auto;
 		height:100%;
 		overflow: auto;
-		
 	}
 	.good_name{
 		width:100%;
@@ -89,7 +95,15 @@
 		align-content:center;
 		align-items:center;
 		border-bottom:1px solid grey;
+        position: relative;
 	}
+    .link_to{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
 
 	.good_name .text{
 		font-size: 14px;
@@ -147,15 +161,19 @@
     	width:75%;
     	height:100%;
     }
+    .food_wrap ul{
+        width:100%;
+        height:100%;
+        overflow: auto;
+    }
     .food_list{
-    	width:96%;
-    	margin:0 auto;
+        width:100%;
     	height:auto;
 
     }
     .food_list_item{
-    	width:100%;
-    	height:160px;
+        width:100%;
+    	height:auto;
     }
 
     .food_title{
@@ -163,6 +181,7 @@
     	height:40px;
     	line-height: 40px;
     	background-color: #f3f5f7;
+        text-indent: 0.5em;
     }
     .food_detail{
     	width:100%;
@@ -184,24 +203,31 @@
     .food_detail_right{
     	display: inline-block;
     	vertical-align: top;
-    	margin: 15px 0 0 10px;
-    }
-    .food_detail_right{
-    	display: inline-block;
-    	vertical-align: top;
-    	margin: 15px 0 0 10px;
+        width: 160px;
+        height:90px;
+    	margin: 15px 0 0 6px;
     }
 
+
     .food_name{
-    	font-size: 20px;
+    	font-size: 18px;
+        line-height: 24px;
     }
     .des_rat_n{
-    	font-size: 12px;
+    	font-size: 14px;
+        color: grey;
+        line-height: 24px;
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
     .price{
     	font-size: 22px;
+        line-height: 24px;
+        color: red;
     }
     .oldPrice{
-    	under 
+        text-decoration: line-through;
     }
-</style> 
+</style>
