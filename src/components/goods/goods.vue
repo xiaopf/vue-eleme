@@ -2,7 +2,7 @@
 	<div class="goods">
 		<div class="menu_wrap">
 			<ul>
-				<li v-for="good in goodList" class="good_name">
+				<li v-for="(good,index) in goodList" class="good_name" v-on:click="anchor(index)" v-bind:class="{ whiteBg: menuClick }">
 					<span class="text">
 						<span v-bind:class="icon_class_good[good.type]"></span>{{good.name}}
 					</span>
@@ -10,10 +10,10 @@
 			</ul>
 		</div>
 		<div class="food_wrap">
-			<ul class="food_wrap_ul" ref="ul">
-				<li v-for="good in goodList" class="food_list">
+			<ul class="food_wrap_ul" v-on:scroll="scroll_event()">
+				<li v-for="(good,gIndex) in goodList" class="food_list">
                      <div v-for="(food,index) in good.foods" class="food_list_item">
-                        <h3 v-if="index===0" class="food_title">{{good.name}}</h3>
+                        <h3 v-if="index===0" class="food_title" v-bind:id="foodAnchor(gIndex)">{{good.name}}</h3>
                         <div class="food_detail">
                             <div class="food_detail_left">
                             	<img v-bind:src="food.icon" alt="">
@@ -46,7 +46,9 @@
             return {
                 goodList: [],
                 foodList: [],
-                icon_class_good: ['type0', 'type1', 'type2', 'type3', 'type4']
+                foodTitleTop: [],
+                icon_class_good: ['type0', 'type1', 'type2', 'type3', 'type4'],
+                menuClick: false
             };
 		},
         created () {
@@ -54,14 +56,22 @@
                 this.goodList = response.data.data;
             });
         },
-        methods: {
-            scroll_event () {
-                console.log(111);
-            }
+        mounted () {
+            // for (let i = 0;i < this.$el.querySelector('.good_name').length;i + + ) {
+                // console.log(this.$el.querySelector('.menu_wrap ul li'));
+            // };
         },
-        ready () {
-            console.log(this.$refs.ul);
-            window.addEventListener('scroll', this.scroll_event);
+        methods: {
+            anchor (index) {
+                this.menuClick = true;
+                this.$el.querySelector('.food_wrap_ul').scrollTop = this.$el.querySelector('#foodTitle' + index).offsetTop;
+            },
+            scroll_event () {
+                // this.$el.querySelector('.food_wrap_ul').scrollTop = this.$el.querySelector('#foodTitle' + select).offsetTop;
+            },
+            foodAnchor (index) {
+                return 'foodTitle' + index;
+            }
         }
 	};
 </script>
@@ -229,5 +239,8 @@
     }
     .oldPrice{
         text-decoration: line-through;
+    }
+    .whiteBg{
+        background-color: #fff;
     }
 </style>
