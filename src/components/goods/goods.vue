@@ -2,7 +2,7 @@
 	<div class="goods">
 		<div class="menu_wrap">
 			<ul class="menu_wrap_ul">
-				<li v-for="(good,index) in goodList" class="good_name" v-on:click="anchor(index)" v-bind:class="{ whiteBg: menuClick[index]}">
+				<li v-for="(good,index) in goodList" class="good_name" v-on:click="anchor(index)" v-bind:class="{ whiteBg: menuClick[index]}" ref="menuNameTop">
 					<span class="text">
 						<span v-bind:class="getIconType(good.type)"></span>{{good.name}}
 					</span>
@@ -13,7 +13,7 @@
 			<ul class="food_wrap_ul" v-on:scroll="scroll_event">
 				<li v-for="(good,gIndex) in goodList" class="food_list" ref="foodList">
                      <div v-for="(food,index) in good.foods" class="food_list_item" ref="foodListItem">
-                        <h3 v-if="index===0" class="food_title" v-bind:id="foodAnchor(gIndex)" v-bind:class="{food_title_fixed:foodTitleFixed[gIndex]}">{{good.name}}</h3>
+                        <h3 v-if="index===0" class="food_title" v-bind:id="foodAnchor(gIndex)" v-bind:class="{food_title_fixed:foodTitleFixed[gIndex]}" ref="foodTitleTop">{{good.name}}</h3>
                         <div class="food_detail">
                             <div class="food_detail_left">
                             	<img v-bind:src="food.icon" alt="">
@@ -29,10 +29,7 @@
 	                                <span class="price">
 	                                	<span>￥</span><span>{{food.price}}</span>
 	                                </span>
-	                               <!--  <span v-if="food.oldPrice" class="des_rat_n oldPrice">￥{{food.oldPrice}}</span>
-                                    <span v-on:click="item_plus([gIndex, index])" class="item_a item_plus">+</span>
-                                    <span  class="choice_num">{{ choiceNum[gIndex][index] }}</span>
-                                    <span v-on:click="item_reduce([gIndex, index])"  class="item_a item_reduce">-</span> -->
+                                    <vShopBtn v-bind:choiceNum="choiceNum"></vShopBtn>
                                 </p>
                             </div>
                         </div>
@@ -44,6 +41,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
+    import shopBtn from '../shopBtn/shopBtn.vue';
 	export default {
 		data () {
             return {
@@ -57,7 +55,7 @@
                 foodTitleP: [],
                 fullIndex: 0,
                 overflowH: 0,
-                choiceNum: []
+                choiceNum: 0
             };
 		},
         created () {
@@ -66,12 +64,6 @@
             });
         },
         mounted () {
-            this.$nextTick(function() {
-               // this.$http.get('/api/goods').then((response) => {
-               //     this.goodList = response.data.data;
-               // });
-               console.log(this.goodList);
-            });
         },
         methods: {
             // 根据返回type设置icon样式
@@ -136,28 +128,10 @@
                         this.$set(this.foodTitleFixed, 0, false);
                     };
                 };
-            },
-            item_plus (arr) {
-                if (this.add) {
-                    for (var i = 0; i < this.goodList.length; i++) {
-                        this.choiceNum.push([]);
-                        for (var j = 0; j < this.goodList[i].foods.length; j++) {
-                            this.choiceNum[i][j] = 0;
-                        }
-                    }
-                    this.add = false;
-                };
-                console.log(this.choiceNum);
-                if (this.choiceNum[arr[0]][arr[1]] >= 0) {
-                    this.choiceNum[arr[0]][arr[1]] ++;
-                    // this.$set(this.choiceNum[arr[0]], arr[1], value);
-                };
-            },
-            item_reduce (arr) {
-                if (this.choiceNum[arr[0]][arr[1]] >= 0) {
-                    // this.$set(this.choiceNum[arr[0]][arr[1]],);
-                };
             }
+        },
+        components: {
+            vShopBtn: shopBtn
         }
 	};
 </script>
@@ -169,7 +143,7 @@
 		height:auto;
 		position: absolute;
 		top:175px;
-		bottom:60px;
+		bottom:54px;
 		overflow:hidden;
 	}
 	.menu_wrap{
@@ -186,8 +160,6 @@
 		height:100%;
 		overflow: auto;
 	}
-
-    
 	.good_name{
 		width:90%;
         padding: 0 5%;
@@ -352,35 +324,5 @@
     }
     .whiteBg span{
         font-weight: bold;
-    }
-    .item_a{
-        float: right;
-        display: inline-block;
-        font-size:20px;
-        width: 20px;
-        height:20px;
-        line-height: 16px;
-        text-align: center;
-        border:2px solid #008fe1;
-        border-radius:50%;
-        font-weight: bold;
-    }
-
-    .item_reduce{
-        color:#008fe1;
-        background-color:#fff;
-    }
-    .item_plus{
-        color:#fff;
-        background-color:#008fe1;
-        margin-right: 6px;
-    }
-    .choice_num{
-        line-height: 24px;
-        font-size:16px;
-        margin:0 8px;
-        float: right;
-        display: inline-block;
-        color:grey;
     }
 </style>

@@ -2,13 +2,15 @@
   <div id="app">
      <vheader :seller="seller"></vheader>
      <vtab></vtab>
-     <router-view></router-view> 
+     <router-view></router-view>
+     <vshopcart></vshopcart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
     import header from './components/header/header';
     import tab from './components/tab/tab';
+    import shopcart from './components/shopcart/shopcart';
     import Vue from 'vue';
     import axios from 'axios';
     import VueAxios from 'vue-axios';
@@ -28,7 +30,8 @@
       },
       components: {
           vheader: header,
-          vtab: tab
+          vtab: tab,
+          vshopcart: shopcart
       }
     };
 
