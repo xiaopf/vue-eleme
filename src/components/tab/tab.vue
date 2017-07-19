@@ -1,13 +1,21 @@
 <template>
-	<div class="tab">
-        <div class="tab-item"><router-link to="/goods">商品</router-link></div>
-        <div class="tab-item"><router-link to="/ratings">评论</router-link></div>
-        <div class="tab-item"><router-link to="/seller">商家</router-link></div>
-	</div>
+    <div>
+    	<div class="tab">
+            <div class="tab-item"><router-link to="/goods">商品</router-link></div>
+            <div class="tab-item"><router-link to="/ratings">评论</router-link></div>
+            <div class="tab-item"><router-link to="/seller">商家</router-link></div>
+    	</div>
+    	<router-view v-bind:minPrice="minPrice" v-bind:deliveryPrice="deliveryPrice"></router-view>	
+    </div>
 </template>
 
 <script type='text/ecmascript-6'>
-	export default {};
+	export default {
+		props: {
+			minPrice: Number,
+			deliveryPrice: Number
+		}
+	};
 </script>
 
 <style>

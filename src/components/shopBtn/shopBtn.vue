@@ -1,32 +1,50 @@
 <template>
 	<div class="shopBtn">
         <span v-on:click="item_plus()" class="item_a item_plus">+</span>
-        <span v-if="num"  class="choice_num">{{num}}</span>
-        <span v-if="num" v-on:click="item_reduce()"  class="item_a item_reduce">-</span>
+<!--         <span v-if="itemNums">
+            <span v-if="itemNums"  class="choice_num">{{itemNums}}</span>
+            <span v-if="itemNums" v-on:click="item_reduce()"  class="item_a item_reduce">-</span>
+        </span>
+        <span v-else> -->
+            <span v-if="num"  class="choice_num">{{num}}</span>
+            <span v-if="num" v-on:click="item_reduce()"  class="item_a item_reduce">-</span>
+<!--         </span> -->
 	</div>
 </template>
 
 <script type='text/ecmascript-6'>
 	export default {
         props: {
-            choiceNum: {
-                type: Number
+            itemNum: Number
+        },
+        data () {
+            return {
+                num: 0,
+                itemNums: this.itemNum
+            };
+        },
+        watch: {
+            itemNum (val) {
+                this.itemNums = val;
             }
         },
-		data () {
-            return {
-                num: this.choiceNum
-            };
-		},
         methods: {
             item_plus () {
                 if (this.num >= 0) {
                     this.num ++;
+                    this.itemNums ++;
+                    this.$emit('clickPlus');
+                } else {
+                    return false;
                 };
             },
             item_reduce () {
                 if (this.num >= 0) {
                     this.num --;
+                    this.itemNums --;
+                    this.$emit('clickReduce');
+                } else {
+                    return false;
                 };
             }
         }

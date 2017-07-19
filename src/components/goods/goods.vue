@@ -29,7 +29,7 @@
 	                                <span class="price">
 	                                	<span>￥</span><span>{{food.price}}</span>
 	                                </span>
-                                    <vShopBtn v-bind:choiceNum="choiceNum"></vShopBtn>
+                                    <vShopBtn v-on:clickPlus="clickPlus(food.price,food)" v-on:clickReduce="clickReduce(food.price,food)"></vShopBtn>
                                 </p>
                             </div>
                         </div>
@@ -37,12 +37,18 @@
 				</li>
 			</ul>
 		</div>
+        <vshopcart v-bind:total="totalNum"  v-bind:totalPrice="totalP" v-bind:minPrice="minPrice" v-bind:deliveryPrice="deliveryPrice" v-bind:pitchFoods="pitchFoods"></vshopcart>
 	</div>
 </template>
 
 <script type='text/ecmascript-6'>
     import shopBtn from '../shopBtn/shopBtn.vue';
+    import shopcart from '../shopcart/shopcart';
 	export default {
+        props: {
+            minPrice: Number,
+            deliveryPrice: Number
+        },
 		data () {
             return {
                 goodList: [],
@@ -55,7 +61,9 @@
                 foodTitleP: [],
                 fullIndex: 0,
                 overflowH: 0,
-                choiceNum: 0
+                totalNum: 0,
+                totalP: 0,
+                pitchFoods: {}
             };
 		},
         created () {
@@ -128,10 +136,29 @@
                         this.$set(this.foodTitleFixed, 0, false);
                     };
                 };
+            },
+            clickPlus (p, food) {
+                this.totalNum ++;
+                if (this.pitchFoods[encodeURI(food.name)]) {
+                    this.pitchFoods[encodeURI(food.name)][0] ++;
+                } else {
+                    this.pitchFoods[encodeURI(food.name)] = [1, food];
+                };
+                this.totalP += p;
+            },
+            clickReduce (p, food) {
+                this.totalNum --;
+                if (this.pitchFoods[encodeURI(food.name)] && this.pitchFoods[encodeURI(food.name)][0] === 1) {
+                    delete this.pitchFoods[encodeURI(food.name)];
+                } else {
+                    this.pitchFoods[encodeURI(food.name)][0] --;
+                };
+                this.totalP -= p;
             }
         },
         components: {
-            vShopBtn: shopBtn
+            vShopBtn: shopBtn,
+            vshopcart: shopcart
         }
 	};
 </script>
@@ -143,8 +170,9 @@
 		height:auto;
 		position: absolute;
 		top:175px;
-		bottom:54px;
+		bottom:0px;
 		overflow:hidden;
+        padding-bottom: 54px;
 	}
 	.menu_wrap{
         width:25%;
