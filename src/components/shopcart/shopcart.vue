@@ -2,7 +2,7 @@
 	<div class="shopcart">
         <div v-if="shopcartDetail" class="shopcart_detail">
             <ul>
-                <li v-for="item in pitchFoods" class="food_item">
+                <li v-for="(item,key) in pitchFoods" class="food_item">
                     <span>{{ item[1].name }}</span>
                     <span>{{ item[1].price }}</span>
                     <span>{{ item[1].oldPrice }}</span>
