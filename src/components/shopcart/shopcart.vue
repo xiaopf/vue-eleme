@@ -1,13 +1,17 @@
 <template>
 	<div class="shopcart">
-        <div v-if="shopcartDetail" class="shopcart_detail">
+        <div v-if="shopcartDetail && totalL" class="shopcart_detail">
+            <div class="shopcart_title">
+                <p class="shopcart_title_text">购物车</p>
+                <p class="shopcart_title_clearAll" v-on:click="clearAllItems">清空</p>
+            </div>
             <ul>
-                <li v-for="(item,key) in pitchFoods" class="food_item">
-                    <span>{{ item[1].name }}</span>
-                    <span>{{ item[1].price }}</span>
-                    <span>{{ item[1].oldPrice }}</span>
-                    <span>{{ item[1].description }}</span>
-                    <vShopBtn v-on:clickPlus="clickPlus(item[1].price)" v-on:clickReduce="clickReduce(item[1].price)" v-bind:itemNum="item[0]"></vShopBtn>
+                <li v-for="(item,key) in pitchFoodsShopcart"  v-if="item[0]"  class="food_item">
+                    <span class="shopcart_name">{{ item[1].name }}</span>
+                    <!-- <span v-if="item[1].description" class="shopcart_description">({{ item[1].description }})</span> -->
+                    <vShopBtn v-on:clickPlus="clickPlus(item[1].name,item[1].price)" v-on:clickReduce="clickReduce(item[1].name,item[1].price)" v-bind:itemNum="item[0]"></vShopBtn>
+                    <span class="shopcart_price">￥{{ item[1].price * item[0] }}</span>
+                    <span v-if="item[1].oldPrice" class="shopcart_oldPrice">￥{{ item[1].oldPrice }}</span>
                 </li>
             </ul>
         </div>
@@ -32,6 +36,7 @@
             totalPrice: Number,
             minPrice: Number,
             deliveryPrice: Number,
+            shopcartD: Boolean,
             pitchFoods: {
                 type: Object
             }
@@ -39,9 +44,10 @@
         data () {
             return {
                 shortPrice: this.minPrice,
-                shopcartDetail: false,
+                shopcartDetail: this.shopcartD,
                 totalL: this.total,
-                totalPriceL: this.totalPrice
+                totalPriceL: this.totalPrice,
+                pitchFoodsShopcart: this.pitchFoods
             };
         },
         watch: {
@@ -50,6 +56,12 @@
             },
             totalPrice (val) {
                 this.totalPriceL = val;
+            },
+            pitchFoods (val) {
+                this.pitchFoodsShopcart = val;
+            },
+            shopcartD (val) {
+                this.shopcartDetail = val;
             }
         },
         computed: {
@@ -72,13 +84,21 @@
                     };
                 }
             },
-            clickPlus (p) {
-                this.totalL ++;
-                this.totalPriceL = this.totalL * p;
+            clickPlus (n, p) {
+                this.$emit('clickPlusShop', n, p);
             },
-            clickReduce (p) {
-                this.totalL --;
-                this.totalPriceL = this.totalL * p;
+            clickReduce (n, p) {
+                this.$emit('clickReduceShop', n, p);
+                if (this.totalL === 1) {
+                    this.shopcartDetail = false;
+                };
+            },
+            clearAllItems () {
+                this.pitchFoodsShopcart = {};
+                this.shopcartDetail = false;
+                this.totalPriceL = 0;
+                this.totalL = 0;
+                this.$emit('clearAll');
             }
         },
         components: {
@@ -182,14 +202,43 @@
     background-color: #25bb64;
     color: #fff;
 }
+.shopcart_detail::-webkit-scrollbar{
+    display: none;
+}
 .shopcart_detail{
     position: absolute;
     bottom:54px;
     left:0;
     width: 100%;
-    max-height: 810%;
-    height: 400%;
-    background-color: red;
+    max-height: 764%;
+    height: auto;
+    overflow: auto;
+    background-color: #fff;
+    padding: 0 0 24px 0;
+}
+.shopcart_title{
+    width: 100%;
+    height: 40px;
+    background-color: #f3f5f7;
+    font-size: 0;
+}
+.shopcart_title_text{
+    display: inline-block;
+    float: left;
+    color: #07111b;
+    height: 40px;
+    font-size: 18px;
+    line-height: 40px;
+    padding: 0 20px;
+}
+.shopcart_title_clearAll{
+    display: inline-block;
+    float: right;
+    color: #008fe1;
+    height: 40px;
+    font-size: 16px;
+    line-height: 40px;
+    padding: 0 20px;
 }
 .calculate{
     display: inline-block;
@@ -197,11 +246,46 @@
     font-size: 18px;
 }
 .food_item{
-    width:100%;
+    width:92%;
     height: 50px;
+    margin: 0 4%;
+    border-bottom:1px solid grey;
+    line-height: 50px;
+    font-size: 0;
 }
-.food_item span{
-    display: inline-block;
-    font-size:16px;
+.food_item>span{
+    line-height: 50px;
 }
+.food_item .shopBtn{
+    padding-top: 12px;
+}
+.shopcart_name{
+    font-size: 16px;
+    font-weight: bold;
+    color:#000;
+}
+.shopcart_description{
+    font-size: 14px;
+    color:grey;
+    width: 6em;
+    padding: 0 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.shopcart_oldPrice{
+    font-size: 14px;
+    color:grey;
+    float:right;
+    text-decoration: line-through;
+}
+.shopcart_price{
+    font-size: 16px;
+    font-weight: bold;
+    color:red;
+    float:right;
+    padding: 0 16px 0 4px;
+}
+
+
 </style>

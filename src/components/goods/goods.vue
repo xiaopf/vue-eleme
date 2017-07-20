@@ -23,13 +23,13 @@
                                 <p class="des_rat_n">{{food.description}}</p>
                                 <p class="des_rat_n">
                                 	<span>月售{{food.sellCount}}份</span>
-                                	<span>好评率{{food.rating}}%</span>
+                                 	<span>好评率{{food.rating}}%</span>
                                 </p>
                                 <p class="price_num_wrap">
 	                                <span class="price">
 	                                	<span>￥</span><span>{{food.price}}</span>
 	                                </span>
-                                    <vShopBtn v-on:clickPlus="clickPlus(food.price,food)" v-on:clickReduce="clickReduce(food.price,food)"></vShopBtn>
+                                    <vShopBtn v-if="reRender" v-on:clickPlus="clickPlus(food.price,food)" v-on:clickReduce="clickReduce(food.price,food)" v-bind:itemNum="fakeNumC(food.name)"></vShopBtn>
                                 </p>
                             </div>
                         </div>
@@ -37,7 +37,7 @@
 				</li>
 			</ul>
 		</div>
-        <vshopcart v-bind:total="totalNum"  v-bind:totalPrice="totalP" v-bind:minPrice="minPrice" v-bind:deliveryPrice="deliveryPrice" v-bind:pitchFoods="pitchFoods"></vshopcart>
+        <vshopcart v-bind:shopcartD="shopcartDetail"  v-bind:total="totalNum"  v-bind:totalPrice="totalP" v-bind:minPrice="minPrice" v-bind:deliveryPrice="deliveryPrice" v-bind:pitchFoods="pitchFoods" v-on:clickPlusShop="clickPlusShop" v-on:clickReduceShop="clickReduceShop" v-on:clearAll="clearAllItems"></vshopcart>
 	</div>
 </template>
 
@@ -63,7 +63,9 @@
                 overflowH: 0,
                 totalNum: 0,
                 totalP: 0,
-                pitchFoods: {}
+                pitchFoods: {},
+                reRender: true,
+                shopcartDetail: false
             };
 		},
         created () {
@@ -103,13 +105,12 @@
             },
             // menu list item点击事件后，控制food list wrap的scrollTop，模拟锚点的效果
             anchor (index) {
-                this.changeMenuBg(index);
-                this.$el.querySelector('.food_wrap_ul').scrollTop = this.$el.querySelector('#foodTitle' + index).offsetTop;
+                this.$el.querySelector('.food_wrap_ul').scrollTop = this.$el.querySelector('#foodTitle' + index).offsetTop + 2;
             },
             // food list wrap 滑动事件，并监控其scrollTop,首次通过滑动时间出发一个一次性事件，得出goodList.length，overflowH和fullIndex
             // 然后通过循环判断，操作menu list wrap的scrollTop，使之滑动
             scroll_event () {
-                var scrollTop = this.$el.querySelector('.food_wrap_ul').scrollTop;
+                var scrollTop = this.$el.querySelector('.food_wrap_ul').scrollTop + 40;
                 if (this.scrollOnOff) {
                     this.scrollOnOff = false;
                     for (let i = 0; i < this.goodList.length; i++) {
@@ -119,16 +120,18 @@
                     };
                     let liH = parseInt(window.getComputedStyle(this.$el.querySelector('.menu_wrap ul li')).height);
                     let viewH = parseInt(window.getComputedStyle(this.$el.querySelector('.menu_wrap ul')).height);
-                    this.overflowH = liH * this.goodList.length - viewH;
+                    this.overflowH = liH * (this.goodList.length + 1) - viewH;
                     this.fullIndex = Math.floor(viewH / liH);
                 };
                 for (let i = 0; i < this.goodList.length; i++) {
                     this.foodTitleFixed[i] = false;
-                    if (scrollTop >= this.foodTitleP[i] && scrollTop < this.foodTitleP[i + 1]) {
+                    if (scrollTop > this.foodTitleP[i] && scrollTop < this.foodTitleP[i + 1]) {
+                        console.log(i);
                         this.changeMenuBg(i);
                         this.contrlMenuWrap(i);
                         this.$set(this.foodTitleFixed, i, true);
-                    } else if (scrollTop >= this.foodTitleP[i] && i === this.goodList.length - 1) {
+                    } else if (scrollTop > this.foodTitleP[i] && i === this.goodList.length - 1) {
+                        console.log(i);
                         this.changeMenuBg(i);
                         this.contrlMenuWrap(i);
                         this.$set(this.foodTitleFixed, i, true);
@@ -147,6 +150,9 @@
                 this.totalP += p;
             },
             clickReduce (p, food) {
+                if (this.totalL === 1) {
+                    this.shopcartDetail = false;
+                };
                 this.totalNum --;
                 if (this.pitchFoods[encodeURI(food.name)] && this.pitchFoods[encodeURI(food.name)][0] === 1) {
                     delete this.pitchFoods[encodeURI(food.name)];
@@ -154,7 +160,35 @@
                     this.pitchFoods[encodeURI(food.name)][0] --;
                 };
                 this.totalP -= p;
+            },
+            clickPlusShop (n, p) {
+                this.reRender = false;
+                this.totalNum ++;
+                this.totalP += p;
+                this.pitchFoods[encodeURI(n)][0] ++;
+                this.reRender = true;
+            },
+            clickReduceShop (n, p) {
+                this.reRender = false;
+                this.totalNum --;
+                this.totalP -= p;
+                this.pitchFoods[encodeURI(n)][0] --;
+                this.reRender = true;
+            },
+            fakeNumC (n) {
+                if (this.pitchFoods[encodeURI(n)]) {
+                    return this.pitchFoods[encodeURI(n)][0];
+                } else {
+                    return 0;
+                }
+            },
+            clearAllItems () {
+                this.shopcartDetail = false;
+                this.totalNum = 0;
+                this.totalP = 0;
+                this.pitchFoods = {};
             }
+
         },
         components: {
             vShopBtn: shopBtn,
@@ -188,6 +222,9 @@
 		height:100%;
 		overflow: auto;
 	}
+    .menu_wrap ul li:last-child{
+        margin: 0 0 50px 0;
+    }
 	.good_name{
 		width:90%;
         padding: 0 5%;

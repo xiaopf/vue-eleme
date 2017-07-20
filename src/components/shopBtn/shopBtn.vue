@@ -9,11 +9,14 @@
 <script type='text/ecmascript-6'>
 	export default {
         props: {
-            itemNum: Number
+            itemNum: {
+                type: Number,
+                default: 0
+            }
         },
         data () {
             return {
-                num: 0
+                num: this.itemNum
             };
         },
         watch: {
