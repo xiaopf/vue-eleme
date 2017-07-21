@@ -37,6 +37,11 @@
 				</li>
 			</ul>
 		</div>
+        <div class="item_detail_shade">
+            <div class="item_detail">
+                
+            </div>
+        </div>
         <vshopcart v-bind:shopcartD="shopcartDetail"  v-bind:total="totalNum"  v-bind:totalPrice="totalP" v-bind:minPrice="minPrice" v-bind:deliveryPrice="deliveryPrice" v-bind:pitchFoods="pitchFoods" v-on:clickPlusShop="clickPlusShop" v-on:clickReduceShop="clickReduceShop" v-on:clearAll="clearAllItems"></vshopcart>
 	</div>
 </template>
@@ -65,7 +70,9 @@
                 totalP: 0,
                 pitchFoods: {},
                 reRender: true,
-                shopcartDetail: false
+                shopcartDetail: false,
+                scrollEvent: true,
+                clicked: true
             };
 		},
         created () {
@@ -105,12 +112,26 @@
             },
             // menu list item点击事件后，控制food list wrap的scrollTop，模拟锚点的效果
             anchor (index) {
-                this.$el.querySelector('.food_wrap_ul').scrollTop = this.$el.querySelector('#foodTitle' + index).offsetTop + 2;
+                this.scrollEvent = false;
+                if (this.clicked) {
+                    for (let i = 0; i < this.goodList.length; i++) {
+                        this.menuNameP[i] = this.$refs.menuNameTop[i].offsetTop;
+                        this.foodTitleP[i] = this.$refs.foodTitleTop[i].offsetTop;
+                        this.foodTitleFixed[i] = false;
+                    };
+                    this.clicked = false;
+                }
+                this.changeMenuBg(index);
+                this.$el.querySelector('.food_wrap_ul').scrollTop = this.foodTitleP[index];
+                let _this = this;
+                setTimeout(function () {
+                    _this.scrollEvent = true;
+                }, 1);
             },
             // food list wrap 滑动事件，并监控其scrollTop,首次通过滑动时间出发一个一次性事件，得出goodList.length，overflowH和fullIndex
             // 然后通过循环判断，操作menu list wrap的scrollTop，使之滑动
             scroll_event () {
-                var scrollTop = this.$el.querySelector('.food_wrap_ul').scrollTop + 40;
+                var scrollTop = this.$el.querySelector('.food_wrap_ul').scrollTop;
                 if (this.scrollOnOff) {
                     this.scrollOnOff = false;
                     for (let i = 0; i < this.goodList.length; i++) {
@@ -123,20 +144,20 @@
                     this.overflowH = liH * (this.goodList.length + 1) - viewH;
                     this.fullIndex = Math.floor(viewH / liH);
                 };
-                for (let i = 0; i < this.goodList.length; i++) {
-                    this.foodTitleFixed[i] = false;
-                    if (scrollTop > this.foodTitleP[i] && scrollTop < this.foodTitleP[i + 1]) {
-                        console.log(i);
-                        this.changeMenuBg(i);
-                        this.contrlMenuWrap(i);
-                        this.$set(this.foodTitleFixed, i, true);
-                    } else if (scrollTop > this.foodTitleP[i] && i === this.goodList.length - 1) {
-                        console.log(i);
-                        this.changeMenuBg(i);
-                        this.contrlMenuWrap(i);
-                        this.$set(this.foodTitleFixed, i, true);
-                    } else if (scrollTop === 0) {
-                        this.$set(this.foodTitleFixed, 0, false);
+                if (this.scrollEvent) {
+                    for (let i = 0; i < this.goodList.length; i++) {
+                        this.foodTitleFixed[i] = false;
+                        if (scrollTop > this.foodTitleP[i] && scrollTop < this.foodTitleP[i + 1]) {
+                            this.changeMenuBg(i);
+                            this.contrlMenuWrap(i);
+                            this.$set(this.foodTitleFixed, i, true);
+                        } else if (scrollTop > this.foodTitleP[i] && i === this.goodList.length - 1) {
+                            this.changeMenuBg(i);
+                            this.contrlMenuWrap(i);
+                            this.$set(this.foodTitleFixed, i, true);
+                        } else if (scrollTop === 0) {
+                            this.$set(this.foodTitleFixed, 0, false);
+                        };
                     };
                 };
             },
