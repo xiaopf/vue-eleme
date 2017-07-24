@@ -13,8 +13,9 @@
 			<ul class="food_wrap_ul" v-on:scroll="scroll_event">
 				<li v-for="(good,gIndex) in goodList" class="food_list" ref="foodList">
                      <div v-for="(food,index) in good.foods" class="food_list_item" ref="foodListItem">
+                        <vfood v-show="showFoodWrap[index]" v-bind:food="food" v-on:backTo="backTo"></vfood>
                         <h3 v-if="index===0" class="food_title" v-bind:id="foodAnchor(gIndex)" v-bind:class="{food_title_fixed:foodTitleFixed[gIndex]}" ref="foodTitleTop">{{good.name}}</h3>
-                        <div class="food_detail">
+                        <div class="food_detail" v-on:click="showFood(index)">
                             <div class="food_detail_left">
                             	<img v-bind:src="food.icon" alt="">
                             </div>
@@ -49,6 +50,7 @@
 <script type='text/ecmascript-6'>
     import shopBtn from '../shopBtn/shopBtn.vue';
     import shopcart from '../shopcart/shopcart';
+    import food from '../food/food';
 	export default {
         props: {
             minPrice: Number,
@@ -72,7 +74,8 @@
                 reRender: true,
                 shopcartDetail: false,
                 scrollEvent: true,
-                clicked: true
+                clicked: true,
+                showFoodWrap: [false]
             };
 		},
         created () {
@@ -208,12 +211,22 @@
                 this.totalNum = 0;
                 this.totalP = 0;
                 this.pitchFoods = {};
+            },
+            showFood (index) {
+                console.log(index);
+                this.$set(this.showFoodWrap, index, true);
+            },
+            backTo () {
+                for (let i = 0; i < this.showFoodWrap.length; i++) {
+                    this.$set(this.showFoodWrap, i, false);
+                };
             }
 
         },
         components: {
             vShopBtn: shopBtn,
-            vshopcart: shopcart
+            vshopcart: shopcart,
+            vfood: food
         }
 	};
 </script>
