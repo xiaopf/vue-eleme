@@ -15,7 +15,7 @@
                      <div v-for="(food,index) in good.foods" class="food_list_item" ref="foodListItem">
                         <vfood v-show="showFoodWrap[index]" v-bind:food="food" v-on:backTo="backTo"></vfood>
                         <h3 v-if="index===0" class="food_title" v-bind:id="foodAnchor(gIndex)" v-bind:class="{food_title_fixed:foodTitleFixed[gIndex]}" ref="foodTitleTop">{{good.name}}</h3>
-                        <div class="food_detail" v-on:click="showFood(index)">
+                        <div class="food_detail" v-on:click="showFood(index,$event)">
                             <div class="food_detail_left">
                             	<img v-bind:src="food.icon" alt="">
                             </div>
@@ -212,9 +212,10 @@
                 this.totalP = 0;
                 this.pitchFoods = {};
             },
-            showFood (index) {
-                console.log(index);
-                this.$set(this.showFoodWrap, index, true);
+            showFood (index, event) {
+                if (event.target.className.indexOf('item_a') === -1) {
+                   this.$set(this.showFoodWrap, index, true);
+               }
             },
             backTo () {
                 for (let i = 0; i < this.showFoodWrap.length; i++) {

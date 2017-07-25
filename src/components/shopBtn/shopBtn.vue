@@ -25,21 +25,21 @@
             }
         },
         methods: {
-            item_plus () {
+            item_plus (e) {
                 if (this.num >= 0) {
                     this.num ++;
                     this.$emit('clickPlus');
                 } else {
                     return false;
-                };
+                }
             },
-            item_reduce () {
+            item_reduce (e) {
                 if (this.num >= 0) {
                     this.num --;
                     this.$emit('clickReduce');
                 } else {
                     return false;
-                };
+                }
             }
         }
 	};
