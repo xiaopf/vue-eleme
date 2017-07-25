@@ -13,9 +13,10 @@
 			<ul class="food_wrap_ul" v-on:scroll="scroll_event">
 				<li v-for="(good,gIndex) in goodList" class="food_list" ref="foodList">
                      <div v-for="(food,index) in good.foods" class="food_list_item" ref="foodListItem">
-                        <vfood v-show="showFoodWrap[index]" v-bind:food="food" v-on:backTo="backTo"></vfood>
+                      <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+                        <vfood v-show="showFoodWrap[gIndex][index]" v-bind:food="food" v-on:backTo="backTo"></vfood>
                         <h3 v-if="index===0" class="food_title" v-bind:id="foodAnchor(gIndex)" v-bind:class="{food_title_fixed:foodTitleFixed[gIndex]}" ref="foodTitleTop">{{good.name}}</h3>
-                        <div class="food_detail" v-on:click="showFood(index,$event)">
+                        <div class="food_detail" v-on:click="showFood([gIndex, index],$event)">
                             <div class="food_detail_left">
                             	<img v-bind:src="food.icon" alt="">
                             </div>
@@ -75,7 +76,7 @@
                 shopcartDetail: false,
                 scrollEvent: true,
                 clicked: true,
-                showFoodWrap: [false]
+                showFoodWrap: [[false]]
             };
 		},
         created () {
@@ -212,15 +213,21 @@
                 this.totalP = 0;
                 this.pitchFoods = {};
             },
-            showFood (index, event) {
+            showFood (arr, event) {
                 if (event.target.className.indexOf('item_a') === -1) {
-                   this.$set(this.showFoodWrap, index, true);
+                   this.$set(this.showFoodWrap[arr[0]], arr[1], true);
                }
             },
             backTo () {
-                for (let i = 0; i < this.showFoodWrap.length; i++) {
-                    this.$set(this.showFoodWrap, i, false);
+                console.log(11);
+                for (var i = 0; i < this.showFoodWrap.length; i++) {
+                    console.log(22);
+                    for (var j = 0; j < this.showFoodWrap[i].length; j++) {
+                        console.log(33);
+                        this.$set(this.showFoodWrap[i], j, false);
+                    };
                 };
+                console.log(this.showFoodWrap);
             }
 
         },
