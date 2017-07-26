@@ -1,6 +1,6 @@
 <template>
 	<div class="shopBtn">
-        <span v-on:click="item_plus()" class="item_a item_plus">+</span>
+        <span                                                                                                                                                                                                                 class="item_a item_plus">+</span>
         <span v-if="num"  class="choice_num">{{num}}</span>
         <span v-if="num" v-on:click="item_reduce()"  class="item_a item_reduce">-</span>
 	</div>

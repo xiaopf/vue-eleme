@@ -54,6 +54,7 @@
         top:0;
         left:0;
         bottom:54px;
+        z-index: 9999;
     }
     .back{
         display: block;
@@ -69,12 +70,8 @@
     }
     .head_pic_wrap{
         width:100%;
-        padding-top:100%;
     }
     .head_pic_wrap img{
-        position:absolute;
-        left:0;
-        top:0;
         width:100%;
     }
     .food .info{

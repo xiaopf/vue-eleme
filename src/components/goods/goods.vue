@@ -14,9 +14,9 @@
 				<li v-for="(good,gIndex) in goodList" class="food_list" ref="foodList">
                      <div v-for="(food,index) in good.foods" class="food_list_item" ref="foodListItem">
                       <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-                        <vfood v-show="showFoodWrap[gIndex][index]" v-bind:food="food" v-on:backTo="backTo"></vfood>
+                        <vfood v-show="showFoodWrapMethod(gIndex,index)" v-bind:food="food" v-on:backTo="backTo"></vfood>
                         <h3 v-if="index===0" class="food_title" v-bind:id="foodAnchor(gIndex)" v-bind:class="{food_title_fixed:foodTitleFixed[gIndex]}" ref="foodTitleTop">{{good.name}}</h3>
-                        <div class="food_detail" v-on:click="showFood([gIndex, index],$event)">
+                        <div class="food_detail" v-on:click="showFood(gIndex, index, $event)">
                             <div class="food_detail_left">
                             	<img v-bind:src="food.icon" alt="">
                             </div>
@@ -213,23 +213,28 @@
                 this.totalP = 0;
                 this.pitchFoods = {};
             },
-            showFood (arr, event) {
+            showFood (gIndex, index, event) {
+                console.log(this.showFoodWrap[gIndex]);
                 if (event.target.className.indexOf('item_a') === -1) {
-                   this.$set(this.showFoodWrap[arr[0]], arr[1], true);
+                   this.$set(this.showFoodWrap[gIndex], index, true);
                }
             },
             backTo () {
-                console.log(11);
                 for (var i = 0; i < this.showFoodWrap.length; i++) {
-                    console.log(22);
                     for (var j = 0; j < this.showFoodWrap[i].length; j++) {
-                        console.log(33);
                         this.$set(this.showFoodWrap[i], j, false);
                     };
                 };
-                console.log(this.showFoodWrap);
+            },
+            showFoodWrapMethod (gIndex, index) {
+                if (!this.showFoodWrap[gIndex]) {
+                    this.$set(this.showFoodWrap, gIndex, []);
+                    if (this.showFoodWrap[gIndex][index] === undefined) {
+                        this.$set(this.showFoodWrap[gIndex], index, false);
+                    }
+                };
+                return this.showFoodWrap[gIndex][index];
             }
-
         },
         components: {
             vShopBtn: shopBtn,
