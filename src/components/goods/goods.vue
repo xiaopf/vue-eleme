@@ -14,9 +14,9 @@
 				<li v-for="(good,gIndex) in goodList" class="food_list" ref="foodList">
                      <div v-for="(food,index) in good.foods" class="food_list_item" ref="foodListItem">
                       <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-                        <vfood v-show="showFoodWrapMethod(gIndex,index)" v-bind:food="food" v-on:backTo="backTo"></vfood>
+                        <vfood v-bind:reRender="reRender" v-bind:showAdd="showAdd" v-bind:itemNum="fakeNumC(food.name)" v-show="showFoodWrapMethod(gIndex,index)" v-bind:food="food" v-on:backTo="backTo" v-on:clickPlusShop="clickPlusShop" v-on:clickReduceShop="clickReduceShop" v-on:clickPlus="clickPlus(food.price,food)"></vfood>
                         <h3 v-if="index===0" class="food_title" v-bind:id="foodAnchor(gIndex)" v-bind:class="{food_title_fixed:foodTitleFixed[gIndex]}" ref="foodTitleTop">{{good.name}}</h3>
-                        <div class="food_detail" v-on:click="showFood(gIndex, index, $event)">
+                        <div class="food_detail" v-on:click="showFood(food.name, gIndex, index, $event)">
                             <div class="food_detail_left">
                             	<img v-bind:src="food.icon" alt="">
                             </div>
@@ -76,7 +76,8 @@
                 shopcartDetail: false,
                 scrollEvent: true,
                 clicked: true,
-                showFoodWrap: [[false]]
+                showFoodWrap: [[false]],
+                showAdd: true
             };
 		},
         created () {
@@ -165,7 +166,16 @@
                     };
                 };
             },
-            clickPlus (p, food) {
+            addShopcart (p, n) {
+                // this.totalNum += 1;
+                // if (this.pitchFoods[encodeURI(food.name)]) {
+                //     this.pitchFoods[encodeURI(food.name)][0] ++;
+                // } else {
+                //     this.pitchFoods[encodeURI(food.name)] = [1, food];
+                // };
+                // this.totalP += p;
+            },
+            clickPlus (p, food, where) {
                 this.totalNum ++;
                 if (this.pitchFoods[encodeURI(food.name)]) {
                     this.pitchFoods[encodeURI(food.name)][0] ++;
@@ -174,7 +184,7 @@
                 };
                 this.totalP += p;
             },
-            clickReduce (p, food) {
+            clickReduce (p, food, where) {
                 if (this.totalL === 1) {
                     this.shopcartDetail = false;
                 };
@@ -198,6 +208,11 @@
                 this.totalNum --;
                 this.totalP -= p;
                 this.pitchFoods[encodeURI(n)][0] --;
+                if (this.pitchFoods[encodeURI(n)][0] > 0) {
+                    this.showAdd = false;
+                } else {
+                    this.showAdd = true;
+                };
                 this.reRender = true;
             },
             fakeNumC (n) {
@@ -213,8 +228,12 @@
                 this.totalP = 0;
                 this.pitchFoods = {};
             },
-            showFood (gIndex, index, event) {
-                console.log(this.showFoodWrap[gIndex]);
+            showFood (n, gIndex, index, event) {
+                if (this.pitchFoods[encodeURI(n)] && this.pitchFoods[encodeURI(n)][0] > 0) {
+                    this.showAdd = false;
+                } else {
+                    this.showAdd = true;
+                };
                 if (event.target.className.indexOf('item_a') === -1) {
                    this.$set(this.showFoodWrap[gIndex], index, true);
                }
@@ -347,10 +366,10 @@
     	width:75%;
     	height:100%;
     }
-    .food_wrap ul::-webkit-scrollbar{
+    .food_wrap>ul::-webkit-scrollbar{
         display: none;
     }
-    .food_wrap ul{
+    .food_wrap>ul{
         width:100%;
         height:100%;
         overflow: auto;

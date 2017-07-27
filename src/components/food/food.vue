@@ -14,8 +14,10 @@
                 <span class="food_price_new"><i>￥</i><i>{{ food.price }}</i></span>
                 <span class="food_price_old" v-if="food.oldPrice">￥{{ food.oldPrice }}</span>
             </p>
-            <div class="food_add_shopcart">加入购物车</div>
-            <vshopBtn v-if=false></vshopBtn>
+            <div v-if="changeAdd  && ReRender" class="food_add_shopcart" v-on:click="addShopcart(food.price,food.name)">加入购物车</div>
+
+            <vshopBtn v-if="!changeAdd && ReRender" v-on:clickPlus="clickPlus(food.name,food.price)" v-on:clickReduce="clickReduce(food.name,food.price)" v-on:detailClickReduce="detailClickReduce" v-bind:itemNum="ItemNum"></vshopBtn>
+
         </div>
         <div v-if="food.info" class="line_grey"></div>
         <div v-if="food.info" class="info_detail">
@@ -23,38 +25,85 @@
             <p>{{ food.info }}</p>
         </div>
         <div class="line_grey"></div>
+        <vratingSelect v-bind:ratings="food.ratings" v-bind:foodChoiceType="foodChoiceType"></vratingSelect>
 	</div>
 </template>
 
 <script type='text/ecmascript-6'>
     import shopBtn from '../shopBtn/shopBtn';
+    import ratingSelect from '../ratingSelect/ratingSelect';
     export default {
         props: {
             food: {
                 type: Object
+            },
+            showAdd: Boolean,
+            itemNum: Number,
+            reRender: Boolean
+        },
+        data () {
+            return {
+                changeAdd: this.showAdd,
+                ItemNum: this.itemNum,
+                ReRender: this.reRender,
+                foodChoiceType: ['全部', '推荐', '吐槽']
+            };
+        },
+        watch: {
+            showAdd (val) {
+                this.changeAdd = val;
+            },
+            itemNum (val) {
+                this.ItemNum = val;
+            },
+            reRender (val) {
+                this.ReRender = val;
             }
         },
         methods: {
             back () {
                 this.$emit('backTo');
+            },
+            addShopcart (p, n) {
+                if (this.changeAdd) {
+                    this.changeAdd = false;
+                };
+                this.$emit('clickPlus');
+            },
+            detailClickReduce (num) {
+                if (num === 0) {
+                    this.changeAdd = true;
+                };
+            },
+            clickPlus (n, p) {
+                this.$emit('clickPlusShop', n, p);
+            },
+            clickReduce (n, p) {
+                this.$emit('clickReduceShop', n, p);
+                if (this.ItemNum) {
+                    this.changeAdd = true;
+                }
             }
         },
         components: {
-            vshopBtn: shopBtn
+            vshopBtn: shopBtn,
+            vratingSelect: ratingSelect
         }
     };
 </script>
 
 <style>
+    .food::-webkit-scrollbar{
+        display: none;
+    }
 	.food{
         width:100%;
-        height:100%;
         background:#fff;
         position:fixed;
         top:0;
         left:0;
         bottom:54px;
-        z-index: 9999;
+        overflow:auto;
     }
     .back{
         display: block;
@@ -63,7 +112,7 @@
         color:#fff;
         background:url(./images/back.png) no-repeat center center;
         background-size: 15px 32px;
-        position: absolute;
+        position: fixed;
         left:20px;
         top:20px;
         z-index:999;
@@ -144,12 +193,17 @@
     }
     .info_detail h2{
         font-size:20px;
-        line-height: 20px;
-        height:20px;
+        line-height: 34px;
+        height:34px;
     }
     .info_detail p{
         font-size:16px;
         line-height: 24px;
         color:grey;
+    }
+    .info .shopBtn{
+        position: absolute;
+        right: 18px;
+        bottom:18px;
     }
 </style>

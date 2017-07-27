@@ -250,7 +250,7 @@
 		left: 0;
 		z-index: 99;
 		overflow: auto;
-		background: rgba(7,17,27,0.8);
+		background: rgba(7,17,27,0.7);
 	}
 	.detail_wrap{
 		width: 100%;
@@ -270,10 +270,12 @@
 	}
 	.detail_close{
 		width: 100%;
-		font-size: 32px;
-		height: 32px;
-		width: 32px;
+		font-size: 40px;
+		height: 40px;
+		width: 40px;
 		margin:-64px auto 0;
+		color: #fff;
+		font-weight: bold;
 	}
 
 	.vstar_wrap{

@@ -1,5 +1,6 @@
 <template>
 	<div class="shopcart">
+        <div v-if="shopcartDetail && totalL" class="shopcartDetailShade" v-on:click="clickShade"></div>
         <div v-if="shopcartDetail && totalL" class="shopcart_detail">
             <div class="shopcart_title">
                 <p class="shopcart_title_text">购物车</p>
@@ -99,6 +100,15 @@
                 this.totalPriceL = 0;
                 this.totalL = 0;
                 this.$emit('clearAll');
+            },
+            clickShade () {
+                if (this.total > 0) {
+                    if (this.shopcartDetail) {
+                       this.shopcartDetail = false;
+                    } else {
+                       this.shopcartDetail = true;
+                    };
+                }
             }
         },
         components: {
@@ -286,6 +296,13 @@
     float:right;
     padding: 0 16px 0 4px;
 }
-
+.shopcartDetailShade{
+    width: 100% ;
+    height: 100%;
+    position:fixed;
+    top:0;
+    left:0;
+    background-color: rgba(0,0,0,0.5);
+}
 
 </style>
