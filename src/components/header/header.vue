@@ -25,7 +25,7 @@
 				<div class="detail_content">
 				    <div class="detail_name">{{ seller.name }}</div>
 					<div class="vstar_wrap">
-						<vstar v-bind:score=seller.score v-bind:size="8"></vstar>
+						<vstar v-bind:score=seller.score v-bind:size="20"></vstar>
 					</div>
 					<div class="title">
 						<div class="line"></div>
@@ -275,7 +275,12 @@
 		width: 40px;
 		margin:-64px auto 0;
 		color: #fff;
-		font-weight: bold;
+		font-weight: bold;{
+        width: 28px;
+        height: 27px;
+        display: inline-block;
+        margin: 5px 5px;
+    }
 	}
 
 	.vstar_wrap{

@@ -24,7 +24,7 @@
                 <span v-if="totalPriceL">还差</span><span>￥{{  shortPrice }}</span>
                 <span>起送</span>
             </span>
-            <span v-else class="calculate">结算</span>
+            <span v-else class="calculate" v-on:click="countAll">结算</span>
         </div>
 	</div>
 </template>
@@ -109,6 +109,9 @@
                        this.shopcartDetail = true;
                     };
                 }
+            },
+            countAll () {
+                console.log();
             }
         },
         components: {

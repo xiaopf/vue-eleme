@@ -15,23 +15,48 @@
           <hr>
           <ul class="ratingSelectItems" v-if="reRender">
               <li v-for="rating in ratings" v-if="showOrNot(rating.rateType)">
-                  <p v-if="!right" class="rating_p_01">
-                      <span class="rating_01_span_01">{{rateTime(rating.rateTime)}}</span>
-                      <span class="rating_01_span_03"><img v-bind:src="rating.avatar" alt=""></span>
-                      <span class="rating_01_span_02">{{rating.username}}</span>
-                  </p>
-                  <p class="rating_p_02">
-                      <span v-bind:class="rateType(rating.rateType)" class="rating_02_span_01"></span>
-                      <span class="rating_02_span_02">{{rating.text}}</span>
-                  </p>
+
+                    <div v-if="!rating.score">
+                        <p v-if="!right" class="rating_p_01">
+                           <span class="rating_01_span_01">{{rateTime(rating.rateTime)}}</span>
+                           <span class="rating_01_span_03"><img v-bind:src="rating.avatar" alt=""></span>
+                           <span class="rating_01_span_02">{{rating.username}}</span>
+                        </p>
+                        <p class="rating_p_02">
+                           <span v-bind:class="rateType(rating.rateType)" class="rating_02_span_01"></span>
+                           <span class="rating_02_span_02">{{rating.text}}</span>
+                        </p> 
+                    </div>
+                    <div v-else>
+                        <div class="ratings_img_name_star_wrap">
+                            <div class="ratings_img"><img v-bind:src="rating.avatar" alt=""></div>
+                            <div class="ratings_name_star">
+                                <p class="ratings_name_star_p01">                   
+                                    <span>{{rating.username}}</span>
+                                    <span v-if="!right" class="ratings_time">{{rateTime(rating.rateTime)}}</span>
+                                </p>
+                                <p class="ratings_name_star_p02">
+                                    <span><vstar v-bind:score="rating.score" v-bind:size="-1"></vstar></span>
+                                    <span v-if="rating.deliveryTime && !right">{{ rating.deliveryTime }}分钟送达</span>
+                                </p>
+                            </div>
+                        </div>
+                        <p v-if="rating.text" class="ratings_text">{{rating.text}}</p>
+                        <div v-if="!right" class="ratings_type_recommend">
+                            <p class="ratings_type" v-bind:class="rateType(rating.rateType)"></p>
+                            <p class="ratings_recommend">
+                                <span v-for="recommend in rating.recommend">{{recommend}}</span>
+                            </p>
+                        </div>
+                    </div>
               </li>
           </ul> 
        </div>
-
 	</div>
 </template>
 
 <script type='text/ecmascript-6'>
+    import star from '../star/star';
 	export default {
       props: {
         ratings: Array,
@@ -93,7 +118,10 @@
             };
             return num;
         }
-      }
+      },
+        components: {
+            vstar: star
+        }
 	};
 </script>
 <style>
@@ -123,6 +151,7 @@
     }
     .card_li_01{
         background-color:#008fe1;
+        color:#fff;
     }
     .card_li_02{
         background-color:#99d8fc;
@@ -135,7 +164,7 @@
        height:30px;
        line-height: 30px;
     }
-    .rating_p_02 .up{
+    .rating_p_02 .up,.ratings_type_recommend .up{
         display: inline-block;
         width: 24px;
         height: 24px;
@@ -143,7 +172,7 @@
         background-size: 18px 18px;
         font-size: 0
     }
-    .rating_p_02 .down{
+    .rating_p_02 .down,.ratings_type_recommend .down{
         display: inline-block;
         font-size: 24px;
         vertical-align: top;
@@ -187,19 +216,16 @@
     }
     .ratingSelectItems>li{
         width:100%;
-        padding: 16px 0;
+        padding: 12px 0 8px 0;
         border-bottom:1px solid grey;
     }
-
-
     .ratingSelectItems .rating_p_01{
         margin-bottom: 10px;
         font-size: 0;
     }
     .ratingSelectItems .rating_p_02{
-
+        margin-bottom: 6px;
     }
-
     .ratingSelectItems .rating_p_01 .rating_01_span_01{
         font-size: 14px;
         vertical-align:top;
@@ -230,8 +256,6 @@
         height:24px;
         border-radius:50%;
     }
-
-
     .ratingSelectItems .rating_p_02 .rating_02_span_01{
 
     }
@@ -239,5 +263,77 @@
         font-size: 18px;
         color:#000;
         line-height: 24px;
+    }
+    .ratings_img{
+        vertical-align:top;
+        display: inline-block;
+        width:36px;
+        height:36px;
+        border-radius:50%;
+        margin: 0 4px 0 0;
+        padding-bottom: 6px;
+    }
+    .ratings_img_name_star_wrap{
+        position: relative;
+    }
+    .ratings_img>img{
+        width:36px;
+        height:36px;
+        border-radius:50%;
+    }
+    .ratings_name_star{
+        vertical-align:top;
+        display: inline-block;
+        height:36px;
+        line-height:18px;
+        padding-bottom: 4px;
+    }
+    .ratings_name_star>p>span{
+        vertical-align:top;
+        display: inline-block;
+        font-size: 14px;
+        line-height:18px;
+    }
+    .ratings_name_star_p01{
+        display: block;
+    }
+    .ratings_name_star_p02{
+
+    }
+    .ratings_text{
+        padding: 4px 0 4px 40px;
+        font-size:16px;
+        line-height: 22px;
+    }
+    .ratings_type_recommend{
+        margin:4px 0 4px 40px;
+    }
+    .ratings_type{
+        display: inline;
+        vertical-align: top;
+        margin-top: 5px;
+    }
+    .ratings_recommend{
+        display: inline;
+        vertical-align: top;
+
+    }
+    .ratings_recommend span{
+        display: inline-block;
+        padding:3px 6px;
+        height:16px;
+        font-size: 14px;
+        color:grey;
+        border:1px solid grey;
+        margin:4px;
+        border-radius:4px;
+    }
+    .ratings_time{
+        position: absolute;
+        right:0px;
+        top:0px;
+        height:18px;
+        line-height: 18px;
+        font-size:14px;
     }
 </style>
